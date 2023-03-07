@@ -1,5 +1,6 @@
 :root {
     --highlight: #fe615a;
+    --highlight-selected: #FE9C98;
     --background-dark: #4d6466;
     --background-medium: #789e9e;
     --background-light: #b7d8d6;
@@ -88,8 +89,9 @@ main {
 }
 
 .screen {
+    overflow: hidden;
     background-color: var(--background-light);
-    min-width: 28rem;
+    width: 28rem;
     height: 6rem;
     border-radius: 0.35em;
     font-weight: 500;
@@ -116,21 +118,26 @@ button {
     color: var(--text);
 }
 
-button:hover, button:focus {
+button:hover, button:focus { /* might have this effect be when pressed */
     filter: brightness(130%);
     cursor: pointer;
 }
 
-.binary-op {
+.binary.op {
     background-color: var(--highlight);
 }
 
-#zero {
+.binary.op.selected {
+    background-color: var(--highlight-selected);
+    color: var(--background-dark);
+}
+
+.zero {
     grid-column: 1/3;
 }
 
 @media (max-width: 450px) {
     .screen {
-        min-width: 90vw;
+        width: 90vw;
     }
 }
