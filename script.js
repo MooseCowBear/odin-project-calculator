@@ -22,32 +22,49 @@ keysWrapper.addEventListener("click", (event) => {
     }
     else if (event.target.id === "equals") { 
         console.log("hit equals!");
-        operands.push(parseFloat(screen.innerText));
+        let number = parseFloat(screen.innerText); 
+        if (!isNaN(number)){
+            operands.push(number);
+        }
         console.log("OPERANDS", operands, operators);
 
         if (operators.length > 0) {
             console.log("enough operators to evalaute!");
             let calculation = evaluate();
             console.log("calc = ", calculation);
-            screen.innerText = `${truncate(calculation)}`;
+            if (isFinite(calculation)){
+                screen.innerText = `${truncate(calculation)}`;
+            }
+            else {
+                screen.innerText = "Nuh uh uh...";
+                operands.push(0);
+            }
         }
-        //need to allow all buttons
         enableButtons(".number", ".decimal", ".op"); 
-        continuingNumber = true;
+        continuingNumber = false;
         console.log("after equals", operands, operators);
     }
     else if (event.target.classList.contains("binary")) { //got a binary op
         console.log("hit binary op!");
         continuingNumber = false;
-        operands.push(parseFloat(screen.innerText)); //took what was in display before and added it to the stack to be evaluated
+        let number = parseFloat(screen.innerText); 
+        if (!isNaN(number)){
+            operands.push(number);
+        }
         console.log("OPERANDS AFTER HITTING BINARY OP", operands, operators);
 
         if (operators.length > 0) {
             console.log("enough operators to evalaute!");
             let calculation = evaluate();
             console.log("calc = ", calculation);
-            screen.innerText = `${truncate(calculation)}`; //now ready for a number
-            operands.push(parseFloat(screen.innerText));
+            if (isFinite(calculation)){
+                screen.innerText = `${truncate(calculation)}`;
+                operands.push(parseFloat(screen.innerText));
+            }
+            else {
+                screen.innerText = "Nuh uh uh...";
+                operands.push(0); //just reset
+            }
         }
         operators.push(event.target.id);
         enableButtons(".decimal", ".number");
@@ -68,9 +85,14 @@ keysWrapper.addEventListener("click", (event) => {
         console.log("hit unary op!");
         continuingNumber = false;
         let number = parseFloat(screen.innerText);
-        number = evaluateUnary(event.target.id, number);
-        screen.innerText = `${number}`;
-        disableButtons(".number");
+        if (!isNaN(number)){
+            number = evaluateUnary(event.target.id, number);
+            screen.innerText = `${number}`;
+            disableButtons(".number");
+        }
+        else {
+            operands.push(0);
+        }
     }
     else if (event.target.classList.contains(".decimal")) { 
         console.log("OPERANDS", operands);
