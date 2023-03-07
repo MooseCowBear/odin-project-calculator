@@ -97,6 +97,7 @@ main {
     align-items: flex-end;
     justify-content: flex-end;
     padding: 0 0.3em;
+    color: var(--background-dark);
 }
 
 .keys-wrapper {
