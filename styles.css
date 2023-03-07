@@ -72,6 +72,7 @@ body {
     align-items: center;
     gap: 1em;
     background-color: var(--text);
+    color: var(--highlight);
 }
 
 
