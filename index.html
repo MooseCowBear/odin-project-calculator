@@ -13,31 +13,31 @@
 <body>
     <h1>i am a calculator</h1>
     <main>
-        <div class="screen"></div>
+        <div class="screen">0</div>
         <div class="keys-wrapper">
-            <button>ac</button>
-            <button>&plusmn;</button>
-            <button> &percnt;</button>
-            <button>&divide;</button>
+            <button id="clear">ac</button>
+            <button id="negate" class="unary op">&plusmn;</button>
+            <button id="percent" class="unary op">&percnt;</button>
+            <button id="divide" class="binary op">&divide;</button>
 
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            <button>&times;</button>
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button id="multiply" class="binary op">&times;</button>
 
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-            <button>&minus;</button>
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button id="subtract" class="binary op">&minus;</button>
 
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>&plus;</button>
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button id="add" class="binary op">&plus;</button>
 
-            <button>0</button>
-            <button>.</button>
-            <button>&equals;</button>
+            <button class="zero">0</button>
+            <button class="decimal">.</button>
+            <button id="equals" class="binary op">&equals;</button>
 
         </div>
     </main>
