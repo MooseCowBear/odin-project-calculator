@@ -18,7 +18,6 @@ keysWrapper.addEventListener("click", (event) => {
         return;
     }
     else if (event.target.id === "clear") {
-        console.log("hit clear button!"); 
         //need to check the inner text to see if "ac" or "c"
         if (event.target.innerText === "ac"){
             clearAll();
@@ -28,27 +27,20 @@ keysWrapper.addEventListener("click", (event) => {
         }
     }
     else if (event.target.id === "equals") { 
-        console.log("hit equals!");
         executeEquals();
     }
     else if (event.target.classList.contains("decimal")) {  
-        console.log("hit decimal"); 
         addDecimal();
     }
     else if (event.target.classList.contains("binary")) {  
-        console.log("hit binary op!", event.target.id);
         addBinaryOperator(event.target);
-        console.log(event.target.classList); //class is added but styling has not updated
     }
     else if (event.target.classList.contains("number")) {  
-        console.log("hit number! continuing?", continuingNumber);
         addNumber(event.target.innerText);
     }
     else { //unary operator 
-        console.log("hit unary op!");
         executeUnary(event.target.id);
     }
-    console.log("AT END OF BUTTON PRESS", operands, operators);
 });
 
 function highlightSelectedOp(target) {
@@ -117,13 +109,9 @@ function performCalculationAndDisplay() {
     let number = parseFloat(screen.innerText); //get whatever is on the screen
     if (!isNaN(number)){
         operands.push(number); //if it's not our error message, push it to the operand stack
-        console.log("PUSHING NUMBER", number);
     }
-    console.log("OPERANDS in perform", operands, operators);
-
     if (operators.length > 0) { //check that we can perform a calculation
         let calculation = evaluate();
-        console.log("CALC = ", calculation);
 
         if (isFinite(calculation)){ 
             screen.innerText = `${truncate(calculation)}`;
@@ -190,15 +178,10 @@ function enableButtons() {
 }
 
 function evaluate() {
-
-    console.log("evaluting with operands", operands, "and operators", operators);
     const op = operators.pop();
     const x = operands.pop();
     const y = operands.pop(); 
-
-    console.log("x, y", x, y, op);
-
-    let result; 
+    
     if (op === "add"){
         return y + x;
     }
