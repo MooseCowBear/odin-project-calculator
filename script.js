@@ -54,6 +54,7 @@ function clearAll() {
 }
 
 function executeEquals() {
+    continuingNumber = false;
     let number = parseFloat(screen.innerText); //get whatever is on the screen
         if (!isNaN(number)){
             operands.push(number); //if it's not our error message, push it to the operand stack
@@ -72,8 +73,8 @@ function executeEquals() {
                 operands.push(0);
             }
         }
+        //same as binary up until this point... ADD FUNCTION FOR REPEAT
         enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
-        continuingNumber = false;
         console.log("after equals", operands, operators);
 }
 
@@ -89,6 +90,7 @@ function addDecimal() {
         disableButtons(".decimal");
         screen.innerText = "0.";
         continuingNumber = true;
+        enableButtons(".number");
     }
 }
 
@@ -113,9 +115,32 @@ function addBinaryOperator(id) {
             operands.push(0); //just reset
         }
     }
+
     operators.push(id);
     enableButtons(".decimal", ".number");
     disableButtons(".binary");
+}
+
+function performCalculationAndDisplay() {
+    continuingNumber = false;
+    let number = parseFloat(screen.innerText); //get whatever is on the screen
+    if (!isNaN(number)){
+        operands.push(number); //if it's not our error message, push it to the operand stack
+    }
+    console.log("OPERANDS", operands, operators);
+
+    if (operators.length > 0) { //check that we can perform a calculation
+        let calculation = evaluate();
+        console.log("CALC = ", calculation);
+
+        if (isFinite(calculation)){ 
+            screen.innerText = `${truncate(calculation)}`;
+        }
+        else {
+            screen.innerText = "Nuh uh uh..."; //warning for divide by zero
+            operands.push(0);
+        }
+    }
 }
 
 function addNumber(numeral) {
@@ -134,7 +159,7 @@ function executeUnary(id) {
     if (!isNaN(number)){
         number = evaluateUnary(id, number);
         screen.innerText = `${number}`;
-        disableButtons(".number");
+        continuingNumber = false; 
     }
     else {
         operands.push(0);
