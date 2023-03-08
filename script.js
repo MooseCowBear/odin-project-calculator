@@ -43,6 +43,53 @@ keysWrapper.addEventListener("click", (event) => {
     }
 });
 
+//using key board 
+window.addEventListener("keydown", (event) => {
+    if (event.code === "Backspace"){ //delete key
+        if (clearButton.innerText === "ac") {
+            clearAll();
+        }
+        else {
+            clear();
+        }
+    }
+    else if (event.code === "Period") {
+        addDecimal();
+    }
+    //binary operators
+    else if (event.code === "Equal" && event.shiftKey) {//plus
+        const addButton = document.getElementById("add");
+        addBinaryOperator(addButton);
+    }
+    else if (event.code === "Minus") { //subtract
+        const subtractButton = document.getElementById("subtract");
+        addBinaryOperator(subtractButton);
+    }
+    else if (event.code === "Digit8" && event.shiftKey) { //multiply
+        const multiplyButton = document.getElementById("multiply");
+        addBinaryOperator(multiplyButton);
+    }
+    else if (event.code === "Slash") { //divide
+        const divideButton = document.getElementById("divide");
+        addBinaryOperator(divideButton);
+    }
+    //unary ops
+    else if (event.code === "Digit5" && event.shiftKey) { //% sign
+        executeUnary("percent");
+    }
+    else if (event.code === "Digit1" && event.shiftKey) { //using ! for negation
+        executeUnary("negate");
+    }
+    //numbers 
+    else if (event.code.startsWith("Digit")) {
+        const value = event.key; 
+        addNumber(value);
+    }
+    else if (event.code === "Equal" || event.code === "Enter") { //return or equals
+        executeEquals();
+    }
+});
+
 function highlightSelectedOp(target) {
     //remove highlighting from any previously selected binary op
     removeHighlight();
@@ -181,7 +228,7 @@ function evaluate() {
     const op = operators.pop();
     const x = operands.pop();
     const y = operands.pop(); 
-    
+
     if (op === "add"){
         return y + x;
     }
