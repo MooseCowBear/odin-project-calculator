@@ -5,8 +5,7 @@ let operands = [];
 
 let wantOperator = false;
 let numberOkay = true;
-let continuingNumber = false;
-let calculated; 
+let continuingNumber = false; 
 
 
 const screen = document.querySelector(".screen");
@@ -20,13 +19,13 @@ keysWrapper.addEventListener("click", (event) => {
     else if (event.target.id === "clear") {
         console.log("hit clear button!");
         clearAll();
-        return;
     }
     else if (event.target.id === "equals") { 
         console.log("hit equals!");
         executeEquals();
     }
-    else if (event.target.classList.contains("decimal")) {  //still bug, this one where 0. needs be added 
+    else if (event.target.classList.contains("decimal")) {  //still bug, this one where 0. needs be added
+        console.log("hit decimal"); 
         addDecimal();
     }
     else if (event.target.classList.contains("binary")) {  //why is this not being triggered as it should?
@@ -42,7 +41,7 @@ keysWrapper.addEventListener("click", (event) => {
         console.log("hit unary op!");
         executeUnary(event.target.id);
     }
-    
+    console.log("AT END OF BUTTON PRESS", operands, operators);
 });
 
 function clearAll() {
@@ -50,24 +49,18 @@ function clearAll() {
     numberOkay = true;
     operators = [];
     operands = [];
-
     screen.innerText = "0"; 
     enableButtons(".number", ".decimal", ".op");
-
 }
 
 function executeEquals() {
     continuingNumber = false;
-    calculated = performCalculationAndDisplay();
+    performCalculationAndDisplay(); //don't need to hang on to this
     enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
-    console.log("after equals", operands, operators);
 }
 
 function addDecimal() {
-    console.log("decimal pressed");
     if (continuingNumber) {
-        console.log("decimal added...");
-        console.log("OPERANDS", operands);
         disableButtons(".decimal");
         screen.innerText += ".";
     }
@@ -80,23 +73,28 @@ function addDecimal() {
 }
 
 function addBinaryOperator(id) {
-    console.log("in binary func");
-    calculated = performCalculationAndDisplay();
+    let calculated = performCalculationAndDisplay();
     operators.push(id);
     enableButtons(".decimal", ".number");
+    disableButtons(".binary");
     continuingNumber = false;
+    if (calculated) { //want to push result to the stack
+        let number = parseFloat(screen.innerText); 
+        if (!isNaN(number)) {  //if it's not our error message
+            operands.push(number);
+        }
+    }
+    
 }
 
 function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HITTING subtract after add???
     
     let number = parseFloat(screen.innerText); //get whatever is on the screen
-
-    console.log("ON SCREEN AT THE TIME OF BUTTON PRESS", number);
     if (!isNaN(number)){
         operands.push(number); //if it's not our error message, push it to the operand stack
-        console.log("PUSHING NUMBER", number, operands);
+        console.log("PUSHING NUMBER", number);
     }
-    console.log("OPERANDS", operands, operators);
+    console.log("OPERANDS in perform", operands, operators);
 
     if (operators.length > 0) { //check that we can perform a calculation
         let calculation = evaluate();
@@ -115,12 +113,6 @@ function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HIT
 }
 
 function addNumber(numeral) {
-    if (calculated) {  //NOOO!!! 
-        console.log("PUSHING NUMBER IN ADD NUMBER");
-        console.log("the number being pushed is", screen.innerText);
-        operands.push(parseFloat(screen.innerText)); 
-        console.log("operands", operands, "operator", operators);
-    }
     if (!continuingNumber || screen.innerText === "0") { //not right! if prev was operator need to add screen text to operand stack!
         screen.innerText = ""; 
     }
