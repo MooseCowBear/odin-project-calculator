@@ -7,6 +7,7 @@ let wantOperator = false;
 let numberOkay = true;
 let continuingNumber = false; 
 
+const clearButton = document.getElementById("clear"); //for switching between "ac" and "c"
 
 const screen = document.querySelector(".screen");
 const keysWrapper = document.querySelector(".keys-wrapper");
@@ -17,18 +18,24 @@ keysWrapper.addEventListener("click", (event) => {
         return;
     }
     else if (event.target.id === "clear") {
-        console.log("hit clear button!");
-        clearAll();
+        console.log("hit clear button!"); 
+        //need to check the inner text to see if "ac" or "c"
+        if (event.target.innerText === "ac"){
+            clearAll();
+        }
+        else {
+            clear();
+        }
     }
     else if (event.target.id === "equals") { 
         console.log("hit equals!");
         executeEquals();
     }
-    else if (event.target.classList.contains("decimal")) {  //still bug, this one where 0. needs be added
+    else if (event.target.classList.contains("decimal")) {  
         console.log("hit decimal"); 
         addDecimal();
     }
-    else if (event.target.classList.contains("binary")) {  //why is this not being triggered as it should?
+    else if (event.target.classList.contains("binary")) {  
         console.log("hit binary op!", event.target.id);
         addBinaryOperator(event.target.id);
     }
@@ -36,8 +43,7 @@ keysWrapper.addEventListener("click", (event) => {
         console.log("hit number! continuing?", continuingNumber);
         addNumber(event.target.innerText);
     }
-
-    else if (event.target.classList.contains("unary")) { //unary operator - can this just be be?
+    else { //unary operator 
         console.log("hit unary op!");
         executeUnary(event.target.id);
     }
@@ -57,6 +63,7 @@ function executeEquals() {
     continuingNumber = false;
     performCalculationAndDisplay(); //don't need to hang on to this
     enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
+    clearButton.innerText = "ac";
 }
 
 function addDecimal() {
@@ -69,6 +76,9 @@ function addDecimal() {
         screen.innerText = "0.";
         continuingNumber = true;
         enableButtons(".number");
+
+        //here would change ac to c
+        clearButton.innerText = "c";
     }
 }
 
@@ -86,8 +96,7 @@ function addBinaryOperator(id) {
     }
 }
 
-function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HITTING subtract after add???
-    
+function performCalculationAndDisplay() { 
     let number = parseFloat(screen.innerText); //get whatever is on the screen
     if (!isNaN(number)){
         operands.push(number); //if it's not our error message, push it to the operand stack
@@ -118,6 +127,16 @@ function addNumber(numeral) {
     screen.innerText += numeral; 
     enableButtons(".op");
     continuingNumber = true;
+
+    //here would change ac to c
+    clearButton.innerText = "c";
+}
+
+function clear() {
+    //number has not yet been added to stack, so just replace screen with 0
+    screen.innerText = "0";
+    //change back to "ac" in button innertext
+    clearButton.innerText = "ac";
 }
 
 function executeUnary(id) {
