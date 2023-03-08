@@ -6,6 +6,8 @@ let operands = [];
 let wantOperator = false;
 let numberOkay = true;
 let continuingNumber = false;
+let calculated; 
+
 
 const screen = document.querySelector(".screen");
 const keysWrapper = document.querySelector(".keys-wrapper");
@@ -27,12 +29,12 @@ keysWrapper.addEventListener("click", (event) => {
     else if (event.target.classList.contains("decimal")) {  //still bug, this one where 0. needs be added 
         addDecimal();
     }
-    else if (event.target.classList.contains("binary")) { 
-        console.log("hit binary op!");
+    else if (event.target.classList.contains("binary")) {  //why is this not being triggered as it should?
+        console.log("hit binary op!", event.target.id);
         addBinaryOperator(event.target.id);
     }
-    else if (event.target.classList.contains("number")) { 
-        console.log("hit number!");
+    else if (event.target.classList.contains("number")) {  
+        console.log("hit number! continuing?", continuingNumber);
         addNumber(event.target.innerText);
     }
 
@@ -51,31 +53,14 @@ function clearAll() {
 
     screen.innerText = "0"; 
     enableButtons(".number", ".decimal", ".op");
+
 }
 
 function executeEquals() {
     continuingNumber = false;
-    let number = parseFloat(screen.innerText); //get whatever is on the screen
-        if (!isNaN(number)){
-            operands.push(number); //if it's not our error message, push it to the operand stack
-        }
-        console.log("OPERANDS", operands, operators);
-
-        if (operators.length > 0) { //check that we can perform a calculation
-            let calculation = evaluate();
-            console.log("CALC = ", calculation);
-
-            if (isFinite(calculation)){ 
-                screen.innerText = `${truncate(calculation)}`;
-            }
-            else {
-                screen.innerText = "Nuh uh uh..."; //warning for divide by zero
-                operands.push(0);
-            }
-        }
-        //same as binary up until this point... ADD FUNCTION FOR REPEAT
-        enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
-        console.log("after equals", operands, operators);
+    calculated = performCalculationAndDisplay();
+    enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
+    console.log("after equals", operands, operators);
 }
 
 function addDecimal() {
@@ -95,37 +80,21 @@ function addDecimal() {
 }
 
 function addBinaryOperator(id) {
-    continuingNumber = false;
-    let number = parseFloat(screen.innerText); 
-    if (!isNaN(number)){
-        operands.push(number);
-    }
-        console.log("OPERANDS AFTER HITTING BINARY OP", operands, operators);
-
-    if (operators.length > 0) {
-        console.log("enough operators to evalaute!");
-        let calculation = evaluate();
-        console.log("calc = ", calculation);
-        if (isFinite(calculation)){
-            screen.innerText = `${truncate(calculation)}`;
-            operands.push(parseFloat(screen.innerText));
-        }
-        else {
-            screen.innerText = "Nuh uh uh...";
-            operands.push(0); //just reset
-        }
-    }
-
+    console.log("in binary func");
+    calculated = performCalculationAndDisplay();
     operators.push(id);
     enableButtons(".decimal", ".number");
-    disableButtons(".binary");
+    continuingNumber = false;
 }
 
-function performCalculationAndDisplay() {
-    continuingNumber = false;
+function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HITTING subtract after add???
+    
     let number = parseFloat(screen.innerText); //get whatever is on the screen
+
+    console.log("ON SCREEN AT THE TIME OF BUTTON PRESS", number);
     if (!isNaN(number)){
         operands.push(number); //if it's not our error message, push it to the operand stack
+        console.log("PUSHING NUMBER", number, operands);
     }
     console.log("OPERANDS", operands, operators);
 
@@ -135,17 +104,24 @@ function performCalculationAndDisplay() {
 
         if (isFinite(calculation)){ 
             screen.innerText = `${truncate(calculation)}`;
+            return true;
         }
         else {
             screen.innerText = "Nuh uh uh..."; //warning for divide by zero
             operands.push(0);
         }
     }
+    return false;
 }
 
 function addNumber(numeral) {
-    console.log("OPERANDS", operands);
-    if (!continuingNumber || screen.innerText === "0") {
+    if (calculated) {  //NOOO!!! 
+        console.log("PUSHING NUMBER IN ADD NUMBER");
+        console.log("the number being pushed is", screen.innerText);
+        operands.push(parseFloat(screen.innerText)); 
+        console.log("operands", operands, "operator", operators);
+    }
+    if (!continuingNumber || screen.innerText === "0") { //not right! if prev was operator need to add screen text to operand stack!
         screen.innerText = ""; 
     }
     screen.innerText += numeral; 
