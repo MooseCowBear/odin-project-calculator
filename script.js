@@ -37,7 +37,8 @@ keysWrapper.addEventListener("click", (event) => {
     }
     else if (event.target.classList.contains("binary")) {  
         console.log("hit binary op!", event.target.id);
-        addBinaryOperator(event.target.id);
+        addBinaryOperator(event.target);
+        console.log(event.target.classList); //class is added but styling has not updated
     }
     else if (event.target.classList.contains("number")) {  
         console.log("hit number! continuing?", continuingNumber);
@@ -50,12 +51,26 @@ keysWrapper.addEventListener("click", (event) => {
     console.log("AT END OF BUTTON PRESS", operands, operators);
 });
 
+function highlightSelectedOp(target) {
+    //remove highlighting from any previously selected binary op
+    removeHighlight();
+    target.classList.add("selected");
+}
+
+function removeHighlight() {
+    const binaryOps = document.querySelectorAll(".binary");
+    binaryOps.forEach(elem => {
+        elem.classList.remove("selected");
+    });
+}
+
 function clearAll() {
     wantOperator = false;
     numberOkay = true;
     operators = [];
     operands = [];
     screen.innerText = "0"; 
+    removeHighlight();
     enableButtons(".number", ".decimal", ".op");
 }
 
@@ -64,6 +79,7 @@ function executeEquals() {
     performCalculationAndDisplay(); //don't need to hang on to this
     enableButtons(".number", ".decimal", ".op"); //enable any disabled buttons
     clearButton.innerText = "ac";
+    removeHighlight();
 }
 
 function addDecimal() {
@@ -82,9 +98,9 @@ function addDecimal() {
     }
 }
 
-function addBinaryOperator(id) {
+function addBinaryOperator(target) {
     let calculated = performCalculationAndDisplay();
-    operators.push(id);
+    operators.push(target.id);
     enableButtons(".decimal", ".number");
     disableButtons(".op");
     continuingNumber = false;
@@ -94,6 +110,7 @@ function addBinaryOperator(id) {
             operands.push(number);
         }
     }
+    highlightSelectedOp(target); 
 }
 
 function performCalculationAndDisplay() { 
@@ -115,6 +132,7 @@ function performCalculationAndDisplay() {
         else {
             screen.innerText = "Nuh uh uh..."; //warning for divide by zero
             operands.push(0);
+            removeHighlight();
         }
     }
     return false;
