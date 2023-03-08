@@ -44,6 +44,17 @@ keysWrapper.addEventListener("click", (event) => {
         continuingNumber = false;
         console.log("after equals", operands, operators);
     }
+
+    //BUG - when calculate a number (bby hitting operator or equals, currently allows you to add a decimal to result) 
+    else if (event.target.classList.contains("decimal")) {  
+        if (continuingNumber) {
+            console.log("OPERANDS", operands);
+            console.log("hit decimal!");
+            disableButtons(".decimal");
+            screen.innerText += ".";
+        }
+    }
+
     else if (event.target.classList.contains("binary")) { //got a binary op
         console.log("hit binary op!");
         continuingNumber = false;
@@ -70,14 +81,14 @@ keysWrapper.addEventListener("click", (event) => {
         enableButtons(".decimal", ".number");
         disableButtons(".binary");
     }
-    else if (!event.target.classList.contains("op")) { //got a number
+    else if (event.target.classList.contains("number")) { //got a number
         console.log("hit number!");
         console.log("OPERANDS", operands);
         if (!continuingNumber || screen.innerText === "0") {
             screen.innerText = ""; 
         }
         screen.innerText += event.target.innerText; 
-        enableButtons(".binary");
+        enableButtons(".op");
         continuingNumber = true;
     }
     else if (event.target.classList.contains("unary")) { //unary operator
@@ -93,12 +104,6 @@ keysWrapper.addEventListener("click", (event) => {
         else {
             operands.push(0);
         }
-    }
-    else if (event.target.classList.contains(".decimal")) { 
-        console.log("OPERANDS", operands);
-        console.log("hit decimal!");
-        disableButtons(".decimal");
-        screen.innerText += ".";
     }
     
 });
