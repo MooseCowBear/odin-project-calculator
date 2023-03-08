@@ -33,7 +33,7 @@ keysWrapper.addEventListener("click", (event) => {
     }
     else if (event.target.classList.contains("number")) { 
         console.log("hit number!");
-        addNumber();
+        addNumber(event.target.innerText);
     }
 
     else if (event.target.classList.contains("unary")) { //unary operator - can this just be be?
@@ -78,11 +78,17 @@ function executeEquals() {
 }
 
 function addDecimal() {
+    console.log("decimal pressed");
     if (continuingNumber) {
+        console.log("decimal added...");
         console.log("OPERANDS", operands);
-        console.log("hit decimal!");
         disableButtons(".decimal");
         screen.innerText += ".";
+    }
+    else { //after an equals or, after a binary operator, or after unary operator if press decimal want inner text to be "0."
+        disableButtons(".decimal");
+        screen.innerText = "0.";
+        continuingNumber = true;
     }
 }
 
@@ -112,12 +118,12 @@ function addBinaryOperator(id) {
     disableButtons(".binary");
 }
 
-function addNumber() {
+function addNumber(numeral) {
     console.log("OPERANDS", operands);
     if (!continuingNumber || screen.innerText === "0") {
         screen.innerText = ""; 
     }
-    screen.innerText += event.target.innerText; 
+    screen.innerText += numeral; 
     enableButtons(".op");
     continuingNumber = true;
 }
