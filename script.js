@@ -76,7 +76,7 @@ function addBinaryOperator(id) {
     let calculated = performCalculationAndDisplay();
     operators.push(id);
     enableButtons(".decimal", ".number");
-    disableButtons(".binary");
+    disableButtons(".op");
     continuingNumber = false;
     if (calculated) { //want to push result to the stack
         let number = parseFloat(screen.innerText); 
@@ -84,7 +84,6 @@ function addBinaryOperator(id) {
             operands.push(number);
         }
     }
-    
 }
 
 function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HITTING subtract after add???
@@ -113,7 +112,7 @@ function performCalculationAndDisplay() { //WHY IS THIS NOT REGISTERING WHEN HIT
 }
 
 function addNumber(numeral) {
-    if (!continuingNumber || screen.innerText === "0") { //not right! if prev was operator need to add screen text to operand stack!
+    if (!continuingNumber || screen.innerText === "0") {
         screen.innerText = ""; 
     }
     screen.innerText += numeral; 
